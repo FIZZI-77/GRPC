@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	ssopb "github.com/FIZZI-77/protos/gen/go/sso"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net/mail"
@@ -22,10 +21,6 @@ type serverApi struct {
 const (
 	emptyValue = 0
 )
-
-func Register(gRPC *grpc.Server, auth Auth) {
-	ssopb.RegisterAuthServer(gRPC, &serverApi{auth: auth})
-}
 
 func (s *serverApi) Login(ctx context.Context, req *ssopb.LoginRequest) (*ssopb.LoginResponse, error) {
 
