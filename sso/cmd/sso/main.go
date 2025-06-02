@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+
 	cfg := config.MustLoad()
 
 	log := setupLogger(cfg.Env)
@@ -28,7 +29,7 @@ func main() {
 	log.Info("stopping application", slog.String("signal", sign.String()))
 
 	application.GRPCSrv.Stop()
-	
+
 	log.Info("application stopped")
 
 }
