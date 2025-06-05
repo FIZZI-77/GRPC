@@ -20,9 +20,11 @@ func (s *App) MustRun() {
 	}
 }
 
-func NewApp(log *slog.Logger, port int) *App {
+func NewApp(log *slog.Logger, authService authgrpc.Auth, port int) *App {
 	grpcServer := grpc.NewServer()
-	authgrpc.Register(grpcServer)
+
+	authgrpc.Register(grpcServer, authService)
+
 	return &App{
 		log:        log,
 		gRPCServer: grpcServer,

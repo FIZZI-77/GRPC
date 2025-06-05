@@ -30,12 +30,12 @@ type UserSaver interface {
 }
 
 type UserProvider interface {
-	User(ctx context.Context, email string) (models.User, error)
+	GetUserByEmail(ctx context.Context, email string) (models.User, error)
 	IsAdmin(ctx context.Context, userID int64) (bool, error)
 }
 
 type AppProvider interface {
-	App(ctx context.Context, appID int) (models.App, error)
+	GetAppByID(ctx context.Context, appID int) (models.App, error)
 }
 
 func NewAuth(log *slog.Logger, userSaver UserSaver, userProvider UserProvider, appProvider AppProvider, token time.Duration) *Auth {
@@ -54,7 +54,7 @@ func (a *Auth) Login(ctx context.Context, email string, password string, appID i
 
 	log.Info("attempting to login user")
 
-	user, err := a.userProvider.User(ctx, email)
+	user, err := a.userProvider.GetUserByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, storage.ErrUserNotFound) {
 			a.log.Warn("user not found")
@@ -71,7 +71,7 @@ func (a *Auth) Login(ctx context.Context, email string, password string, appID i
 		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 	}
 
-	app, err := a.appProvider.App(ctx, appID)
+	app, err := a.appProvider.GetAppByID(ctx, appID)
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
