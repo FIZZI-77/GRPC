@@ -59,7 +59,7 @@ func (s *Storage) SaveUser(ctx context.Context, email string, passHash []byte) (
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
 
-	err = stmt.QueryRowContext(ctx, addUserQuery, email, passHash).Scan(&id)
+	err = stmt.QueryRowContext(ctx, email, passHash).Scan(&id)
 	if err != nil {
 		var pqErr *pq.Error
 		if errors.As(err, &pqErr) && string(pqErr.Code) == "23505" {
@@ -84,8 +84,10 @@ func (s *Storage) GetUserByEmail(ctx context.Context, email string) (models.User
 
 	res := stmt.QueryRowContext(ctx, email)
 
+	var isAdmin bool
+	
 	var user models.User
-	err = res.Scan(&user.ID, &user.Email, &user.PassHash)
+	err = res.Scan(&user.ID, &user.Email, &user.PassHash, &isAdmin)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return models.User{}, fmt.Errorf("%s: %w", op, storage.ErrUserNotFound)

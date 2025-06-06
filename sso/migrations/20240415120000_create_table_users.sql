@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 
 CREATE TABLE users(
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     email VARCHAR(50) NOT NULL UNIQUE,
     pass_hash BYTEA NOT NULL
 );
